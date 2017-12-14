@@ -1,0 +1,328 @@
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./revealjs/css/reveal.css">
+    <link rel="stylesheet" href="./revealjs/css/theme/white.css">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <link rel="stylesheet" href="./highlight/styles/googlecode.css">
+    <script src="./highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <style media="screen">
+      .title{
+        color: white !important;
+        text-shadow: black 2px 2px 10px !important;
+        font-size: 100pt !important;/
+      }
+      .panel{
+        background-color: rgb(228, 228, 237);
+        padding: 20px !important;
+        border-radius: 10px;
+      }
+
+      img{
+        border-style: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+      }
+
+      pre{
+        border-style: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+        width: 100% !important;
+      }
+    </style>
+  </head>
+  <!-- #f7ce18 -->
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <img src="./images/tensorflow-logo.png" alt="TensorFlow" width="450">
+          <!-- <h1 class="title">Deep Learning</h1> -->
+
+        </section>
+        <section>
+          <table style="color:rgb(29, 35, 38); font-size:20pt;">
+            <tr>
+              <td>
+                <div class="panel">
+                  <p><span class="icons">&#xf2b9; </span>Émerson Silva</p>
+                  <p><span class="icons">&#xf19d; </span>Universidade Federal de Alagoas</p>
+                  <p><span class="icons">&#xf0e0; </span>emersonjose877@gmail.com</p>
+                  <p><span class="icons">&#xf09b; </span> <a href="https://www.github.com/silvaemerson">silvaemerson</a></p>
+                </div>
+              </td>
+
+              <td>
+                <div class="panel">
+                  <p><span class="icons">&#xf2b9; </span> Luís Eduardo G. França</p>
+                  <p><span class="icons">&#xf19d; </span>Universidade Federal de Alagoas</p>
+                  <p><span class="icons">&#xf0e0; </span>luiseduardogfranca@gmail.com</p>
+                  <p><span class="icons">&#xf09b; </span> <a href="https://www.github.com/luiseduardogfranca"> luiseduardogfranca</a></p>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </section>
+
+        <section>
+          <section>
+            <h2>O que é TensorFlow?</h2>
+          </section>
+
+          <section>
+            <div style="text-align:justify;">
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Biblioteca open source para computação númerica (não somente para machine learning);</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Permite criar modelos preditivos de forma mais eficiente e que requisite menos processamento para a aplicação;</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span> Desenvolvida em <strong>C++</strong>, porém com disponibilidade de comunicação em Python por meio da API TensorFlow.</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Implementação com TensorFlow</h2>
+          </section>
+
+          <section>
+           <p><span class="icons">&#xf09b;</span><a href = "https://github.com/luiseduardogfranca/MLP_implementation" > Breast Cancer classification with Artifical Neural Network using TensorFlow</a></p>
+            <pre>
+              <code class="python" data-trim contenteditable>
+from data_process import cleanData
+import numpy as np
+import tensorflow as tf
+
+cleanData = np.array(cleanData)
+
+# spliting data
+X_train = cleanData[:int(0.9 * len(cleanData)), :-1]
+Y_train = cleanData[:int(0.9 * len(cleanData)), -1]
+
+temp = []
+for i in Y_train:
+  temp.append([1,0]) if i == 2 else temp.append([0,1])
+
+Y_train = np.array(temp)
+
+X_test = cleanData[int(0.9 * len(cleanData)):, :-1]
+Y_test = cleanData[int(0.9 * len(cleanData)):, -1]
+
+temp = []
+for i in Y_test:
+  temp.append([1,0]) if i == 2 else temp.append([0,1])
+
+Y_test = np.array(temp)
+
+X = tf.placeholder(tf.float32, [None, 4], name="Input")
+
+W1 = tf.Variable(tf.truncated_normal([4, 50], stddev=0.1), name="W1")
+b1 = tf.Variable(tf.zeros([50]), name="B1")
+
+W2 = tf.Variable(tf.truncated_normal([50, 2], stddev=0.1), name="W2")
+b2 = tf.Variable(tf.zeros([2]), name="B2")
+
+with tf.name_scope("First_Layer") as scope:
+  l1 = tf.nn.leaky_relu(tf.matmul(X, W1) + b1)
+
+tf.summary.histogram("weights1", W1)
+tf.summary.histogram("biases1", b1)
+
+with tf.name_scope("Second_Layer") as scope:
+  l2 = tf.matmul(l1, W2) + b2
+
+tf.summary.histogram("weights2", W2)
+tf.summary.histogram("biases2", b2)
+
+with tf.name_scope("Output") as scope:
+  Y = tf.nn.softmax(l2)
+
+Y_ = tf.placeholder(tf.float32, [None, 2], name="labels")
+
+# cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=l2,
+#                                                         labels=Y_)
+# cross_entropy = tf.reduce_mean(cross_entropy)*613
+
+cross_entropy = -tf.reduce_sum(Y_*tf.log(Y))
+
+is_correct = tf.equal(tf.argmax(Y, 1), tf.argmax(Y_, 1))
+accuracy = tf.reduce_mean(tf.cast(is_correct, tf.float32))
+
+tf.summary.scalar("cost_train", cross_entropy)
+tf.summary.scalar("acc_train", accuracy)
+
+learning_rate = 0.00003
+optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
+
+merged_summary_op = tf.summary.merge_all()
+
+with tf.Session() as sess:
+  sess.run(tf.global_variables_initializer())
+
+  writer = tf.summary.FileWriter('./log', graph=sess.graph)
+
+  #500 epochs
+  for i in range(500):
+      acc, ce = sess.run([accuracy, cross_entropy], feed_dict={X: X_train,
+                                                               Y_: Y_train})
+      if i%10 == 0:
+          print("Accuracy train:", acc, "Train loss", ce)
+
+      acc, ce = sess.run([accuracy, cross_entropy], feed_dict={X: X_test,
+                                                               Y_: Y_test})
+      if i%10 == 0:
+          print("Accuracy test:", acc, "Test loss", ce)
+
+      _, summary = sess.run([optimizer, merged_summary_op], feed_dict={X: X_train, Y_: Y_train})
+      writer.add_summary(summary, i * 613 + i)
+
+              </code>
+             </pre>
+
+
+          </section>
+
+        </section>
+
+        <section>
+          <section>
+            <h2>Multilayer Perceptron</h2>
+          </section>
+          <section data-background="white">
+            <img class="style-image" src="./images/difference-between-neural-networks-deep-learning-neural-networks.png" alt="Diferença entre neural network e deep learning" width="1000">
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Convolutional Neural Network</h2>
+          </section>
+          <section>
+            <p>Redes convolucionais são inspiradas na organização cortex visual animal</p>
+            <img style="background: transparent;" class="style-image" src="./images/cortex.png" alt="Cortex" width="700">
+          </section>
+          <section data-background="rgb(255, 255, 255)">
+            <p>Representação estrutural de uma CNN simples</p>
+            <img class="style-image" src="./images/direct.png" alt="Convolutional Neural Network" width="1500">
+          </section>
+          <section>
+            <h4>Aplicações de redes convolucionais</h4>
+
+            <div style="text-align:justify;">
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Reconhecimento em vídeo</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Reconhecimento em imagens</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Processamento de linguagem natural</p>
+            </div>
+          </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>Recurrent Neural Network</h2>
+            </section>
+          <section>
+              <div style="text-align:justify;">
+                <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Usadas em dados sequenciais(quando o contexto importa)</p>
+                <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>A saída depende das computações anteriores</p>
+              </div>
+          </section>
+          <section data-background="white">
+            <img class="style-image" src="./images/rnn.png" alt="Recurrent Neural Network">
+          </section>
+          <section data-background="white">
+            <p>Detalhamento de uma RNN</p>
+            <img class="style-image" src="./images/rnn-detail.png" alt="Detalhamento de uma RNN">
+          </section>
+          <section>
+            <h4>Aplicações de redes recorrentes</h4>
+
+            <div style="text-align:justify;">
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Criação do automática de textos</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Classifcação de vídeos</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Tradução</p>
+            </div>
+          </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>Generative Adversarial Network</h2>
+            </section>
+            <section>
+                <div style="text-align:justify;">
+                  <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Usa um gerador e um discriminador(classificador)</p>
+                  <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Aprimorar o gerador</p>
+                  <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Gerar dados perto da realidade</p>
+                </div>
+            </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>GPUs para Deep Learning</h2>
+          </section>
+          <section>
+            <img class="style-image" src="./images/gpu.png" alt="GPU on Deep Learning">
+          </section>
+
+          <section >
+            <div style="text-align:justify;">
+              <p class="fragment highlight-transparent" >
+                <span class="icons">&#xf101; </span>
+                A maior parte da computação em Deep Learning são operações matriciais
+              </p>
+              <p class="fragment highlight-transparent" >
+                <span class="icons">&#xf101; </span>
+                Executam todas essas operações em paralelo
+              </p>
+              <p class="fragment highlight-transparent">
+                <span class="icons">&#xf101; </span>
+                Elas possuem um grande número de núcleos
+              </p>
+              <p class="fragment highlight-transparent">
+                <span class="icons">&#xf101; </span>
+                Também possuem muita memória
+              </p>
+            </div>
+
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Referências</h2>
+          </section>
+          <section>
+            <div style="text-align:justify;">
+               <span class="icons">&#xf127; </span><a href="https://towardsdatascience.com/overview-of-gans-generative-adversarial-networks-part-i-ac78ec775e31">Overview of GANs (Generative Adversarial Networks) - Part I</a><br>
+
+               <span class="icons">&#xf127; </span><a href="https://www.xenonstack.com/blog/log-analytics-with-deep-learning-and-machine-learning">Log Analytics With Deep Learning And Machine Learning</a><br>
+
+               <span class="icons">&#xf127; </span><a href="https://medium.com/@shridhar743/a-beginners-guide-to-deep-learning-5ee814cf7706">A Beginners Guide to Deep Learning</a><br>
+
+               <span class="icons">&#xf127; </span><a href="https://towardsdatascience.com/generative-adversarial-networks-history-and-overview-7effbb713545">Generative Adversarial Networks- History and Overview</a><br>
+            </div>
+          </section>
+        </section>
+      </div>
+    </div>
+
+    <script src="./revealjs/lib/js/head.min.js"></script>
+    <script src="./revealjs/js/reveal.js"></script>
+    <script type="text/javascript">
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        center: true,
+        transition: 'slide'
+      })
+
+      // Reveal.configure({backgroundTransition: 'zoom'})
+    </script>
+  </body>
+
+
+</html>
