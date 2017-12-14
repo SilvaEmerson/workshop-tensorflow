@@ -78,8 +78,28 @@
             <div style="text-align:justify;">
               <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Biblioteca open source para computação númerica (não somente para machine learning);</p>
               <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Permite criar modelos preditivos de forma mais eficiente e que requisite menos processamento para a aplicação;</p>
-              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span> Desenvolvida em <strong>C++</strong>, porém com disponibilidade de comunicação em Python por meio da API TensorFlow.</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span> Desenvolvida em <strong>C++</strong>, porém com disponibilidade de comunicação em Python por meio da API TensorFlow;</p>
           </section>
+
+          <section>
+            <div style="text-align:justify;">
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>TensorFlow vai dispor de várias outras aplicações, como: API TensorFlow, TensorBoard e TensorServing;</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Algumas empresas utilizam o TensorFlow: Google, OpenAI, DeepMind, Snapchat, Airbus, Uber, Dropbox e etc; </p>
+          </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>Conceitos</h2>
+            </section>
+            <section>
+                <div style="text-align:justify;">
+                    <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>TensorFlow usa de grafos para representar o fluxo de dados(tensores) e as suas operações;</p>
+                    <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Tensor: Um array n-dimensional;</p>
+                    <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Nós: Onde ocorre as operações entre os tensores;</p>
+                    <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Session: é o objeto que encapsula o ambiente onde as operações são executadas e as variáveis inicializadas;</p>
+                </div>
+            </section>
         </section>
 
         <section>
@@ -178,6 +198,94 @@ with tf.Session() as sess:
       _, summary = sess.run([optimizer, merged_summary_op], feed_dict={X: X_train, Y_: Y_train})
       writer.add_summary(summary, i * 613 + i)
 
+              </code>
+             </pre>
+
+
+          </section>
+
+        </section>
+
+        <section>
+          <section>
+            <h2>Implementação com Keras</h2>
+          </section>
+
+          <section>
+           <p><span class="icons">&#xf09b;</span><a href = "https://github.com/luiseduardogfranca/MLP_implementation" > Breast Cancer classification with Artifical Neural Network using Keras</a></p>
+            <pre>
+              <code class="python" data-trim contenteditable>
+from data_process import cleanData
+import numpy as np
+from keras.models import Sequential
+from keras.layers import Dense, Input
+from keras.optimizers import SGD
+import matplotlib.pyplot as plt
+
+
+def clean():
+  global cleanData
+  cleanData = np.array(cleanData)
+
+  # spliting data
+  X_train = cleanData[:int(0.9 * len(cleanData)), :-1]
+  Y_train = cleanData[:int(0.9 * len(cleanData)), -1]
+
+  temp = []
+  for i in Y_train:
+      temp.append([1, 0]) if i == 2 else temp.append([0, 1])
+
+  Y_train = np.array(temp)
+
+  X_test = cleanData[int(0.9 * len(cleanData)):, :-1]
+  Y_test = cleanData[int(0.9 * len(cleanData)):, -1]
+
+  temp = []
+  for i in Y_test:
+      temp.append([1, 0]) if i == 2 else temp.append([0, 1])
+
+  Y_test = np.array(temp)
+
+  return X_train, Y_train, X_test, Y_test
+
+
+def train(X_train, Y_train, X_test, Y_test):
+
+  model = Sequential()
+
+  model.add(Dense(units=50, activation='relu', input_dim=4))
+  model.add(Dense(units=2, activation='softmax'))
+
+  sgd = SGD(lr=0.001, decay=0.00001)
+
+  model.compile(loss='categorical_crossentropy',
+                optimizer=sgd,
+                metrics=['accuracy'])
+
+  history = model.fit(X_train, Y_train, epochs=500,
+                      validation_data=(X_test, Y_test))
+
+  # summarize history for accuracy
+  plt.plot(history.history['acc'])
+  plt.plot(history.history['val_acc'])
+  plt.title('model accuracy')
+  plt.ylabel('accuracy')
+  plt.xlabel('epoch')
+  plt.legend(['train', 'test'], loc='best')
+  plt.show()
+  # summarize history for loss
+  plt.plot(history.history['loss'])
+  plt.plot(history.history['val_loss'])
+  plt.title('model loss')
+  plt.ylabel('loss')
+  plt.xlabel('epoch')
+  plt.legend(['train', 'test'], loc='best')
+  plt.show()
+
+
+if __name__ == '__main__':
+  X_train, Y_train, X_test, Y_test = clean()
+  train(X_train, Y_train, X_test, Y_test)
               </code>
              </pre>
 
