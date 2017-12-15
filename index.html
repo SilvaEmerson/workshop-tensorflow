@@ -78,13 +78,13 @@
             <div style="text-align:justify;">
               <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Biblioteca open source para computação númerica (não somente para machine learning);</p>
               <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Permite criar modelos preditivos de forma mais eficiente e que requisite menos processamento para a aplicação;</p>
-              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span> Desenvolvida em <strong>C++</strong>, porém com disponibilidade de comunicação em Python por meio da API TensorFlow;</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span> Desenvolvida em <strong>C++</strong>, porém com disponibilidade de comunicação em <strong>Python</strong> por meio da API TensorFlow;</p>
           </section>
 
           <section>
             <div style="text-align:justify;">
               <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>TensorFlow vai dispor de várias outras aplicações, como: API TensorFlow, TensorBoard e TensorServing;</p>
-              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Algumas empresas utilizam o TensorFlow: Google, OpenAI, DeepMind, Snapchat, Airbus, Uber, Dropbox e etc; </p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf101; </span>Algumas empresas utilizam o TensorFlow: Google, OpenAI, DeepMind, Snapchat, Airbus, Uber, Dropbox e etc. </p>
           </section>
         </section>
 
@@ -321,7 +321,25 @@ if __name__ == '__main__':
             <img src="./images/tensorflow-recognition.gif" alt="TensorFlow for recogntion">
           </section>
           <section>
-            <h2>Implementando...</h2>
+            <pre>
+              <code class="bash" data-trim contenteditable>
+#Download do algorítimo
+git clone https://github.com/akshaypai/tfClassifier
+cd tfClassifier
+
+#Rodar o classificador retornando o top 1
+python classifier.py --image_file file_path_to_image
+
+#Rodar o classificador especificando o top n de classificações
+python classifier.py --image_file file_path_to_image --num_top_predictions number_of_top_results
+              </code>
+            </pre>
+          </section>
+          <section>
+            <p>Reconhecendo uma bela <strong>pizza</strong> </p>
+            <img src="./images/result.gif" alt="Result recogntion">
+            <p><span class="icons">&#xf09b;</span><a href = "https://github.com/akshaypai/tfClassifier" > tfClassifier </a></p>
+
           </section>
         </section>
 
@@ -333,6 +351,7 @@ if __name__ == '__main__':
             <div style="text-align:justify;">
                <span class="icons">&#xf127; </span><a href="https://keras.io/">Keras Documentation</a><br>
                <span class="icons">&#xf127; </span><a href="https://www.tensorflow.org/">TensorFlow.org</a><br>
+               <span class="icons">&#xf127; </span><a href="https://sourcedexter.com/quickly-setup-tensorflow-image-recognition/">How to quickly setup Google’s Tensorflow image recognition</a><br>
             </div>
           </section>
         </section>
