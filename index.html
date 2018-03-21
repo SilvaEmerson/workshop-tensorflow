@@ -81,15 +81,15 @@
 
           <section>
             <div class="text-justify">
-              <p class="fragment fade-up"><a href="https://pandas.pydata.org/">Pandas</a>: Biblioteca para analíse de dados;</p>
+              <p class="fragment fade-up"><a href="https://pandas.pydata.org/">Pandas</a>: Biblioteca para análise de dados;</p>
               <p class="fragment fade-up"><a href="http://www.numpy.org/">Numpy</a>: Operações matemáticas em arrays e matrizes multidimensionais;</p>
-              <p class="fragment fade-up"><a href="https://matplotlib.org/">Matplotlib</a>: Biblioteca de plotagem 2D;</p>
-              <p class="fragment fade-up"><a href="https://seaborn.pydata.org/">Seaborn</a>: Desenho de gráficos estatísticos atraentes;</p>
+              <p class="fragment fade-up"><a href="https://matplotlib.org/">Matplotlib</a>: Biblioteca de Visualização 2D e 3D;</p>
+              <p class="fragment fade-up"><a href="https://seaborn.pydata.org/">Seaborn</a>: Criação de gráficos estatísticos atraentes;</p>
             </div>
           </section>
 
           <section>
-            <p>Intalação...</p>
+            <p>Instalação...</p>
             <pre class="bash" data-trim contenteditable>
               <code>
 <span class="icons"></span> pip3 install pandas seaborn matplotlib numpy
@@ -109,7 +109,7 @@
             </div>
           </section>
           <section>
-            <p>Librarys para manipulação e plotagem: </p>
+            <p>Librarys para manipulação e visualização: </p>
             <pre>
               <code class="python" data-trim contenteditable>
 import pandas as pd
@@ -136,7 +136,7 @@ df = pd.read_csv('wine.data.txt')
 #Recriação de dataframe com as colunas criadas
 df = pd.DataFrame(df.values.tolist(), columns=columns)
 
-#Configuração para o mapa de calor
+#Visualização das correlações em um mapa de calor
 plt.figure(figsize=(10, 10))
 sns.heatmap(df.iloc[:, 1:].corr(), annot=True)
 
@@ -154,13 +154,13 @@ def split_data(data, percent=0.8):
     index = int(percent * len(data))
     return data[:index], data[index:]
 
-#Separa labels do conjunto de dados
+#Separa as classes do conjunto de dados
 labels = df.iloc[:, 0].values
 
-#Seleciona os atributos não correlacionados
+#Seleciona os atributos fracamente correlacionados
 features = df[list(selected_columns)].values
 
-#Recebe o conjunto de dados com a função 'split_data'
+#Separa o conjunto de dados com a função 'split_data'
 X_train, X_test = split_data(features)
 Y_train, Y_test = split_data(labels)
               </code>
