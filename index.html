@@ -163,6 +163,11 @@ features = df[list(selected_columns)].values
 #Separa o conjunto de dados com a função 'split_data'
 X_train, X_test = split_data(features)
 Y_train, Y_test = split_data(labels)
+
+np.save('X_train', X_train)
+np.save('X_test', X_test)
+np.save('Y_train', Y_train)
+np.save('Y_test', Y_test)
               </code>
             </pre>
 
