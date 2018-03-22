@@ -334,38 +334,90 @@ import tensorflow as tf
             </pre>
           </section>
 
-          <pre>
-            <code class="python" data-trim contenteditable>
-Y_train, Y_test = tf.keras.utils.to_categorical(Y_train), tf.keras.utils.to_categorical(Y_test)
+          <section>
+            <p></p>
+
+            <pre>
+              <code class="python" data-trim contenteditable>
+  Y_train, Y_test = tf.keras.utils.to_categorical(Y_train), tf.keras.utils.to_categorical(Y_test)
 
 
 
-features_num = len(X_train[0])
+  features_num = len(X_train[0])
 
-l1 = 50
+  l1 = 50
 
-l2 = len(Y_train[0])
-
-
-
-tf.set_random_seed(10)
-
-X = tf.placeholder(shape=[None, features_num], dtype=tf.float32, name="Input")
-
-labels = tf.placeholder(shape=[None, l2], dtype=tf.float32, name="Labels")
+  l2 = len(Y_train[0])
 
 
 
-with tf.name_scope("Hidden_Layer") as scope:
+  tf.set_random_seed(10)
 
-    W1 = tf.Variable(tf.truncated_normal([features_num, l1], stddev=0.01), name="W1")
+  X = tf.placeholder(shape=[None, features_num], dtype=tf.float32, name="Input")
 
-    B1 = tf.Variable(tf.zeros([l1]), name="B1")
+  labels = tf.placeholder(shape=[None, l2], dtype=tf.float32, name="Labels")
 
-    l1_activation = tf.nn.relu(tf.matmul(X, W1) + B1, name="l1_activation")
-            </code>
-          </pre>
 
+
+  with tf.name_scope("Hidden_Layer") as scope:
+
+      W1 = tf.Variable(tf.truncated_normal([features_num, l1], stddev=0.01), name="W1")
+
+      B1 = tf.Variable(tf.zeros([l1]), name="B1")
+
+      l1_activation = tf.nn.relu(tf.matmul(X, W1) + B1, name="l1_activation")
+              </code>
+            </pre>
+
+          </section>
+
+          <section>
+            <p></p>
+            <img src="./images/first-image-tensorflow.png" alt="First Step" width="650">
+          </section>
+
+          <section>
+            <p></p>
+            <pre class="python" data-trim contenteditable>
+              <code>
+with tf.name_scope("Final_Layer") as scope:
+    W2 = tf.Variable(tf.truncated_normal([l1, l2], stddev=0.01), name="W2")
+    B2 = tf.Variable(tf.zeros([l2]), name="B2")
+    final_result = tf.nn.softmax(tf.matmul(l1_activation, W2) + B2, name="result")
+              </code>
+            </pre>
+          </section>
+
+
+          <section>
+            <p></p>
+            <pre class="python" data-trim contenteditable>
+              <code>
+with tf.name_scope("Loss_function") as scope:
+    loss_func = -tf.reduce_sum(labels * tf.log(final_result))
+              </code>
+            </pre>
+          </section>
+
+          <section>
+            <p></p>
+            <img src="./images/third-image-tensorflow.png" alt="Third Step" width="650">
+          </section>
+
+          <section>
+            <pre class="python" data-trim contenteditable>
+              <code>
+with tf.name_scope('Accuracy') as scope:
+    is_correct = tf.equal(tf.argmax(final_result, 1), tf.argmax(labels, 1))
+    accuracy = tf.reduce_mean(tf.cast(is_correct, tf.float32))
+              </code>
+            </pre>
+          </section>
+
+          <section>
+            <p></p>
+            <img src="./images/fourth-image-tensorflow.png" alt="Fourth Step" width="650">
+          </section>
         </section>
 
         <section>
