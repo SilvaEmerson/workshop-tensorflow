@@ -89,12 +89,30 @@
           </section>
 
           <section>
-            <p>Instalação...</p>
+            <p>Instalação dos pacotes auxiliares...</p>
             <pre class="bash" data-trim contenteditable>
               <code>
 <span class="icons"></span> pip3 install pandas seaborn matplotlib numpy
               </code>
             </pre>
+          </section>
+
+          <section>
+            <p>Instalação do TensorFlow e Keras</p>
+            <pre>
+              <code class="bash" data-trim contenteditable>
+<span class="icons"></span> sudo apt install python3-pip
+
+<span class="icons"></span> pip3 install virtualenv
+
+<span class="icons"></span> virtualenv -p python3 TensorKeras
+
+<span class="icons"></span> source TensorKeras/bin/activate
+
+<span class="icons"></span> pip3 install tensorflow=1.5 keras
+              </code>
+            </pre>
+
           </section>
         </section>
 
@@ -181,7 +199,7 @@ np.save('Y_test', Y_test)
         </section>
 
         <section>
-          <img src="./images/keras-logo.png" alt="Keras" width="450">
+          <img src="./images/keras-logo.png" alt="Keras" width="500">
           <!-- <h1 class="title">Deep Learning</h1> -->
 
         </section>
@@ -205,89 +223,57 @@ np.save('Y_test', Y_test)
           </section>
 
           <section>
-           <p><span class="icons">&#xf09b;</span><a href = "https://github.com/luiseduardogfranca/MLP_implementation" > Breast Cancer classification with Artifical Neural Network using Keras</a></p>
+            <p>Importe as libs nescessárias</p>
             <pre>
               <code class="python" data-trim contenteditable>
-from data_process import cleanData
 import numpy as np
 from keras.models import Sequential
-from keras.layers import Dense, Input
-from keras.optimizers import SGD
+from keras.layers import Dense
+from keras.utils import to_categorical
 import matplotlib.pyplot as plt
-
-
-def clean():
-  global cleanData
-  cleanData = np.array(cleanData)
-
-  # spliting data
-  X_train = cleanData[:int(0.9 * len(cleanData)), :-1]
-  Y_train = cleanData[:int(0.9 * len(cleanData)), -1]
-
-  temp = []
-  for i in Y_train:
-      temp.append([1, 0]) if i == 2 else temp.append([0, 1])
-
-  Y_train = np.array(temp)
-
-  X_test = cleanData[int(0.9 * len(cleanData)):, :-1]
-  Y_test = cleanData[int(0.9 * len(cleanData)):, -1]
-
-  temp = []
-  for i in Y_test:
-      temp.append([1, 0]) if i == 2 else temp.append([0, 1])
-
-  Y_test = np.array(temp)
-
-  return X_train, Y_train, X_test, Y_test
-
-
-def train(X_train, Y_train, X_test, Y_test):
-
-  model = Sequential()
-
-  model.add(Dense(units=50, activation='relu', input_dim=4))
-  model.add(Dense(units=2, activation='softmax'))
-
-  sgd = SGD(lr=0.001, decay=0.00001)
-
-  model.compile(loss='categorical_crossentropy',
-                optimizer=sgd,
-                metrics=['accuracy'])
-
-  history = model.fit(X_train, Y_train, epochs=500,
-                      validation_data=(X_test, Y_test))
-
-  # summarize history for accuracy
-  plt.plot(history.history['acc'])
-  plt.plot(history.history['val_acc'])
-  plt.title('model accuracy')
-  plt.ylabel('accuracy')
-  plt.xlabel('epoch')
-  plt.legend(['train', 'test'], loc='best')
-  plt.show()
-  # summarize history for loss
-  plt.plot(history.history['loss'])
-  plt.plot(history.history['val_loss'])
-  plt.title('model loss')
-  plt.ylabel('loss')
-  plt.xlabel('epoch')
-  plt.legend(['train', 'test'], loc='best')
-  plt.show()
-
-
-if __name__ == '__main__':
-  X_train, Y_train, X_test, Y_test = clean()
-  train(X_train, Y_train, X_test, Y_test)
+from keras.optimizers import Adam
+from keras.initializers import TruncatedNormal
               </code>
-             </pre>
-
-
+            </pre>
           </section>
 
+          <section>
+            <p>Recuperando e montando a rede</p>
+            <pre>
+              <code class="python" data-trim contenteditable>
+#Carrega os dados salvos no pré-processamento com numpy
+X_train, X_test = np.load('X_train.npy'), np.load('X_test.npy')
+Y_train, Y_test = np.load('Y_train.npy'), np.load('Y_test.npy')
+
+Y_train, Y_test = to_categorical(Y_train), to_categorical(Y_test)
+
+#Recupera a quantidade de valores armazenados
+input_dim = len(X_train[0, :])
+classes_num = len(Y_train[0, :])
+
+model = Sequential()
+init = TruncatedNormal(stddev=0.01, seed=10)
+
+#Configurando modelo da rede
+model.add(Dense(units=50, activation='relu', input_dim=input_dim,
+          kernel_initializer=init))
+model.add(Dense(units=classes_num, activation='softmax',
+          kernel_initializer=init))
+
+adam = Adam(lr=0.007)
+model.compile(loss='categorical_crossentropy',
+              optimizer=adam,
+              metrics=['accuracy'])
+
+model.fit(X_train, Y_train, epochs=800,
+          validation_data=(X_test, Y_test), shuffle=False)
+              </code>
+            </pre>
+          </section>
         </section>
+
         <section>
-          <img src="./images/tensorflow-logo.png" alt="TensorFlow logo">
+          <img src="./images/tensorflow-logo.png" alt="TensorFlow logo" width="500">
         </section>
         <section>
           <section>
@@ -317,32 +303,9 @@ if __name__ == '__main__':
                     <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>TensorFlow usa de grafos para representar o fluxo de dados(tensores) e as suas operações;</p>
                     <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Tensor: Um array n-dimensional;</p>
                     <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Nós: Onde ocorre as operações entre os tensores;</p>
-                    <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Session: é o objeto que encapsula o ambiente onde as operações são executadas e as variáveis inicializadas;</p>
+                    <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Session: É o objeto que encapsula o ambiente onde as operações são executadas e as variáveis inicializadas;</p>
                 </div>
             </section>
-        </section>
-
-        <section>
-          <section>
-            <h2>Instalação</h2>
-          </section>
-          <section>
-            <p>Execute os seguintes comandos no terminal:</p>
-            <pre>
-              <code class="bash" data-trim contenteditable>
-<span class="icons"></span> sudo apt install python3-pip
-
-<span class="icons"></span> pip3 install virtualenv
-
-<span class="icons"></span> virtualenv -p python3 TensorKeras
-
-<span class="icons"></span> source TensorKeras/bin/activate
-
-<span class="icons"></span> pip3 install tensorflow=1.5 keras
-              </code>
-            </pre>
-
-          </section>
         </section>
 
         <section>
