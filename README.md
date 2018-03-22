@@ -1,2 +1,2 @@
-# workshop-tensorflow-
-Workshop about TensorFlow and Keras
+# workshop-tensorflow
+Workshop about TensorFlow and keras

@@ -1,0 +1,482 @@
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./revealjs/css/reveal.css">
+    <link rel="stylesheet" href="./revealjs/css/theme/white.css">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <link rel="stylesheet" href="./highlight/styles/vs2015.css">
+    <script src="./highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <style media="screen">
+      .panel{
+        background-color: rgb(228, 228, 237);
+        padding: 20px !important;
+        border-radius: 10px;
+      }
+
+      img{
+        border-style: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+      }
+
+      pre{
+        border-style: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+        width: 100% !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides" style="width:70%;">
+        <section data-background-image="./images/background-slide2.jpeg">
+          <div style="">
+            <p class="subtitle">Workshop com</p>
+            <div class=" ">
+              <!-- <img src="./images/image-t-k.png" alt=""> -->
+              <h1 class="title" style="text-transform: none;">TensorFlow e Keras</h1>
+            </div>
+            <!-- <h1 style="color: white;">TensorFlow <br> <i>+</i>  <br> Keras</h1> -->
+          </div>
+          <!-- <h1 class="title">Deep Learning</h1> -->
+
+        </section>
+        <section>
+          <table style="color:rgb(29, 35, 38); font-size:20pt;">
+            <tr>
+              <td>
+                <div class="panel">
+                  <p><span class="icons">&#xf2b9; </span>Émerson Silva</p>
+                  <p><span class="icons">&#xf19d; </span>Universidade Federal de Alagoas</p>
+                  <p><span class="icons">&#xf0e0; </span>emersonjose877@gmail.com</p>
+                  <p><span class="icons">&#xf09b; </span> <a href="https://www.github.com/silvaemerson">silvaemerson</a></p>
+                </div>
+              </td>
+
+              <td>
+                <div class="panel">
+                  <p><span class="icons">&#xf2b9; </span>Luís Eduardo G. França</p>
+                  <p><span class="icons">&#xf19d; </span>Universidade Federal de Alagoas</p>
+                  <p><span class="icons">&#xf0e0; </span>luiseduardogfranca@gmail.com</p>
+                  <p><span class="icons">&#xf09b; </span> <a href="https://www.github.com/luiseduardogfranca"> luiseduardogfranca</a></p>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </section>
+
+        <section>
+          <section>
+            <div style="text-align:justify;">
+              <h2 style="margin-left:23%; display:inline; margin-bottom:0;">Instalação</h2><br>
+              <p style="margin-left:23%; display:inline; font-size:20pt; " class="text-justify">para <strong>Linux</strong> </p>
+            </div>
+          </section>
+
+          <section>
+            <div class="text-justify">
+              <p class="fragment fade-up"><a href="https://pandas.pydata.org/">Pandas</a>: Biblioteca para análise de dados;</p>
+              <p class="fragment fade-up"><a href="http://www.numpy.org/">Numpy</a>: Operações matemáticas em arrays e matrizes multidimensionais;</p>
+              <p class="fragment fade-up"><a href="https://matplotlib.org/">Matplotlib</a>: Biblioteca de Visualização 2D e 3D;</p>
+              <p class="fragment fade-up"><a href="https://seaborn.pydata.org/">Seaborn</a>: Criação de gráficos estatísticos atraentes;</p>
+            </div>
+          </section>
+
+          <section>
+            <p>Instalação...</p>
+            <pre class="bash" data-trim contenteditable>
+              <code>
+<span class="icons"></span> pip3 install pandas seaborn matplotlib numpy
+              </code>
+            </pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Implementação</h2>
+          </section>
+          <section>
+            <div class="text-justify">
+              <p class="fragment fade-up">Classificação de vinhos em 3 classes com o <strong>TensorFlow</strong> e <strong>Keras</strong>; </p>
+              <p class="fragment fade-up">Dataset: <a href="https://archive.ics.uci.edu/ml/datasets/wine">Wine Data Set</a> </p>
+            </div>
+          </section>
+          <section>
+            <p>Librarys para manipulação e visualização: </p>
+            <pre>
+              <code class="python" data-trim contenteditable>
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+              </code>
+            </pre>
+
+
+          </section>
+          <section>
+            <!-- <button class="btn" type="button" name="open-img"><span class="icons">&#xf1c5; </span> </button>  -->
+            <p>Seleção de atributos:   </p>
+            <pre>
+              <code class="python" data-trim contenteditable>
+#Criação das colunas para tabela
+columns = [i-1 for i in range(1,15)]
+columns[0] = 'Class'
+
+#Leitura do dataset com pandas
+df = pd.read_csv('wine.data.txt')
+
+#Recriação de dataframe com as colunas criadas
+df = pd.DataFrame(df.values.tolist(), columns=columns)
+
+#Visualização das correlações em um mapa de calor
+plt.figure(figsize=(10, 10))
+sns.heatmap(df.iloc[:, 1:].corr(), annot=True)
+
+
+#Lista com atributos de menor correlação
+selected_columns = [3, 2, 4, 2, 13, 2, 4, 13, 6, 13, 6, 12]
+selected_columns = set(selected_columns)
+selected_columns.add('Class')
+
+#Configura o tipo de dados
+df = df.astype('float32')
+
+#Função para selecionar um percentil do conjunto de dados
+def split_data(data, percent=0.8):
+    index = int(percent * len(data))
+    return data[:index], data[index:]
+
+#Separa as classes do conjunto de dados
+labels = df.iloc[:, 0].values
+
+#Seleciona os atributos fracamente correlacionados
+features = df[list(selected_columns)].values
+
+#Separa o conjunto de dados com a função 'split_data'
+X_train, X_test = split_data(features)
+Y_train, Y_test = split_data(labels)
+
+np.save('X_train', X_train)
+np.save('X_test', X_test)
+np.save('Y_train', Y_train)
+np.save('Y_test', Y_test)
+              </code>
+            </pre>
+
+
+          </section>
+
+          <section>
+            <p>Visualização do mapa de correlação</p>
+            <img src="./images/heat-map.png" alt="Mapa de correlação" width="500">
+          </section>
+        </section>
+
+        <section>
+          <img src="./images/keras-logo.png" alt="Keras" width="450">
+          <!-- <h1 class="title">Deep Learning</h1> -->
+
+        </section>
+
+        <section>
+          <section>
+            <h2>O que é Keras?</h2>
+          </section>
+
+          <section>
+            <div style="text-align:justify;">
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>É uma API de alto nível para a criação de redes neurais</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Pode usar TensorFlow, CNTK ou Theano como backend</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Muito usada por pesquisadores devido à facilidade de criação de modelos</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Implementação com Keras</h2>
+          </section>
+
+          <section>
+           <p><span class="icons">&#xf09b;</span><a href = "https://github.com/luiseduardogfranca/MLP_implementation" > Breast Cancer classification with Artifical Neural Network using Keras</a></p>
+            <pre>
+              <code class="python" data-trim contenteditable>
+from data_process import cleanData
+import numpy as np
+from keras.models import Sequential
+from keras.layers import Dense, Input
+from keras.optimizers import SGD
+import matplotlib.pyplot as plt
+
+
+def clean():
+  global cleanData
+  cleanData = np.array(cleanData)
+
+  # spliting data
+  X_train = cleanData[:int(0.9 * len(cleanData)), :-1]
+  Y_train = cleanData[:int(0.9 * len(cleanData)), -1]
+
+  temp = []
+  for i in Y_train:
+      temp.append([1, 0]) if i == 2 else temp.append([0, 1])
+
+  Y_train = np.array(temp)
+
+  X_test = cleanData[int(0.9 * len(cleanData)):, :-1]
+  Y_test = cleanData[int(0.9 * len(cleanData)):, -1]
+
+  temp = []
+  for i in Y_test:
+      temp.append([1, 0]) if i == 2 else temp.append([0, 1])
+
+  Y_test = np.array(temp)
+
+  return X_train, Y_train, X_test, Y_test
+
+
+def train(X_train, Y_train, X_test, Y_test):
+
+  model = Sequential()
+
+  model.add(Dense(units=50, activation='relu', input_dim=4))
+  model.add(Dense(units=2, activation='softmax'))
+
+  sgd = SGD(lr=0.001, decay=0.00001)
+
+  model.compile(loss='categorical_crossentropy',
+                optimizer=sgd,
+                metrics=['accuracy'])
+
+  history = model.fit(X_train, Y_train, epochs=500,
+                      validation_data=(X_test, Y_test))
+
+  # summarize history for accuracy
+  plt.plot(history.history['acc'])
+  plt.plot(history.history['val_acc'])
+  plt.title('model accuracy')
+  plt.ylabel('accuracy')
+  plt.xlabel('epoch')
+  plt.legend(['train', 'test'], loc='best')
+  plt.show()
+  # summarize history for loss
+  plt.plot(history.history['loss'])
+  plt.plot(history.history['val_loss'])
+  plt.title('model loss')
+  plt.ylabel('loss')
+  plt.xlabel('epoch')
+  plt.legend(['train', 'test'], loc='best')
+  plt.show()
+
+
+if __name__ == '__main__':
+  X_train, Y_train, X_test, Y_test = clean()
+  train(X_train, Y_train, X_test, Y_test)
+              </code>
+             </pre>
+
+
+          </section>
+
+        </section>
+        <section>
+          <img src="./images/tensorflow-logo.png" alt="TensorFlow logo">
+        </section>
+        <section>
+          <section>
+            <h2>O que é TensorFlow?</h2>
+          </section>
+
+          <section>
+            <div style="text-align:justify;">
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Biblioteca open source para computação númerica (não somente para machine learning);</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Permite criar modelos preditivos de forma mais eficiente e que requisite menos processamento para a aplicação;</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span> Desenvolvida em <strong>C++</strong>, porém com disponibilidade de comunicação em <strong>Python</strong> por meio da API TensorFlow;</p>
+          </section>
+
+          <section>
+            <div style="text-align:justify;">
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>TensorFlow vai dispor de várias outras aplicações, como: API TensorFlow, TensorBoard e TensorServing;</p>
+              <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Algumas empresas utilizam o TensorFlow: Google, OpenAI, DeepMind, Snapchat, Airbus, Uber, Dropbox e etc. </p>
+          </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>Conceitos</h2>
+            </section>
+            <section>
+                <div style="text-align:justify;">
+                    <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>TensorFlow usa de grafos para representar o fluxo de dados(tensores) e as suas operações;</p>
+                    <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Tensor: Um array n-dimensional;</p>
+                    <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Nós: Onde ocorre as operações entre os tensores;</p>
+                    <p class="fragment highlight-transparent"> <span class="icons">&#xf0a9; </span>Session: é o objeto que encapsula o ambiente onde as operações são executadas e as variáveis inicializadas;</p>
+                </div>
+            </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Instalação</h2>
+          </section>
+          <section>
+            <p>Execute os seguintes comandos no terminal:</p>
+            <pre>
+              <code class="bash" data-trim contenteditable>
+<span class="icons"></span> sudo apt install python3-pip
+
+<span class="icons"></span> pip3 install virtualenv
+
+<span class="icons"></span> virtualenv -p python3 TensorKeras
+
+<span class="icons"></span> source TensorKeras/bin/activate
+
+<span class="icons"></span> pip3 install tensorflow=1.5 keras
+              </code>
+            </pre>
+
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Implementação com TensorFlow</h2>
+          </section>
+
+          <section>
+           <p><span class="icons">&#xf09b;</span></p>
+            <pre>
+              <code class="python" data-trim contenteditable>
+from data_process import cleanData
+import numpy as np
+import tensorflow as tf
+
+cleanData = np.array(cleanData)
+
+# spliting data
+X_train = cleanData[:int(0.9 * len(cleanData)), :-1]
+Y_train = cleanData[:int(0.9 * len(cleanData)), -1]
+
+temp = []
+for i in Y_train:
+  temp.append([1,0]) if i == 2 else temp.append([0,1])
+
+Y_train = np.array(temp)
+
+X_test = cleanData[int(0.9 * len(cleanData)):, :-1]
+Y_test = cleanData[int(0.9 * len(cleanData)):, -1]
+
+temp = []
+for i in Y_test:
+  temp.append([1,0]) if i == 2 else temp.append([0,1])
+
+Y_test = np.array(temp)
+
+X = tf.placeholder(tf.float32, [None, 4], name="Input")
+
+W1 = tf.Variable(tf.truncated_normal([4, 50], stddev=0.1), name="W1")
+b1 = tf.Variable(tf.zeros([50]), name="B1")
+
+W2 = tf.Variable(tf.truncated_normal([50, 2], stddev=0.1), name="W2")
+b2 = tf.Variable(tf.zeros([2]), name="B2")
+
+with tf.name_scope("First_Layer") as scope:
+  l1 = tf.nn.leaky_relu(tf.matmul(X, W1) + b1)
+
+tf.summary.histogram("weights1", W1)
+tf.summary.histogram("biases1", b1)
+
+with tf.name_scope("Second_Layer") as scope:
+  l2 = tf.matmul(l1, W2) + b2
+
+tf.summary.histogram("weights2", W2)
+tf.summary.histogram("biases2", b2)
+
+with tf.name_scope("Output") as scope:
+  Y = tf.nn.softmax(l2)
+
+Y_ = tf.placeholder(tf.float32, [None, 2], name="labels")
+
+# cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=l2,
+#                                                         labels=Y_)
+# cross_entropy = tf.reduce_mean(cross_entropy)*613
+
+cross_entropy = -tf.reduce_sum(Y_*tf.log(Y))
+
+is_correct = tf.equal(tf.argmax(Y, 1), tf.argmax(Y_, 1))
+accuracy = tf.reduce_mean(tf.cast(is_correct, tf.float32))
+
+tf.summary.scalar("cost_train", cross_entropy)
+tf.summary.scalar("acc_train", accuracy)
+
+learning_rate = 0.00003
+optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
+
+merged_summary_op = tf.summary.merge_all()
+
+with tf.Session() as sess:
+  sess.run(tf.global_variables_initializer())
+
+  writer = tf.summary.FileWriter('./log', graph=sess.graph)
+
+  #500 epochs
+  for i in range(500):
+      acc, ce = sess.run([accuracy, cross_entropy], feed_dict={X: X_train,
+                                                               Y_: Y_train})
+      if i%10 == 0:
+          print("Accuracy train:", acc, "Train loss", ce)
+
+      acc, ce = sess.run([accuracy, cross_entropy], feed_dict={X: X_test,
+                                                               Y_: Y_test})
+      if i%10 == 0:
+          print("Accuracy test:", acc, "Test loss", ce)
+
+      _, summary = sess.run([optimizer, merged_summary_op], feed_dict={X: X_train, Y_: Y_train})
+      writer.add_summary(summary, i * 613 + i)
+
+              </code>
+             </pre>
+
+
+          </section>
+
+        </section>
+
+        <section>
+          <section>
+            <h2>Referências</h2>
+          </section>
+          <section>
+            <div style="text-align:justify;">
+               <span class="icons">&#xf127; </span><a href="https://keras.io/">Keras Documentation</a><br>
+               <span class="icons">&#xf127; </span><a href="https://www.tensorflow.org/">TensorFlow.org</a><br>
+               <span class="icons">&#xf127; </span><a href="https://sourcedexter.com/quickly-setup-tensorflow-image-recognition/">How to quickly setup Google’s Tensorflow image recognition</a><br>
+            </div>
+          </section>
+        </section>
+      </div>
+    </div>
+
+    <script src="./revealjs/lib/js/head.min.js"></script>
+    <script src="./revealjs/js/reveal.js"></script>
+    <script type="text/javascript">
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        center: true,
+        transition: 'slide'
+      })
+
+      // Reveal.configure({backgroundTransition: 'zoom'})
+    </script>
+  </body>
+
+
+</html>
