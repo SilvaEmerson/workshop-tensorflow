@@ -71,6 +71,15 @@ pre{
   margin-left: -200px;
 }
 
+.transition-element{
+  width: 450px !important;
+  transition: width 1s;
+}
+
+.transition-element:hover{
+  width: 500px !important;
+}
+
 @font-face {
   font-family: font;
   src: url(../fonts/fontawesome.ttf);
