@@ -238,13 +238,14 @@ from keras.initializers import TruncatedNormal
           </section>
 
           <section>
-            <p>Recuperando e montando a rede</p>
+            <p>Recuperando dados e configurando a rede</p>
             <pre>
               <code class="python" data-trim contenteditable>
 #Carrega os dados salvos no pré-processamento com numpy
 X_train, X_test = np.load('X_train.npy'), np.load('X_test.npy')
 Y_train, Y_test = np.load('Y_train.npy'), np.load('Y_test.npy')
 
+#Criando uma matriz binária '[1,0,0]'
 Y_train, Y_test = to_categorical(Y_train), to_categorical(Y_test)
 
 #Recupera a quantidade de valores armazenados
@@ -260,11 +261,15 @@ model.add(Dense(units=50, activation='relu', input_dim=input_dim,
 model.add(Dense(units=classes_num, activation='softmax',
           kernel_initializer=init))
 
+#Inicializando o otimizador
 adam = Adam(lr=0.007)
+
+#Configurando a forma de compilação da rede
 model.compile(loss='categorical_crossentropy',
               optimizer=adam,
               metrics=['accuracy'])
 
+#Treino da rede
 model.fit(X_train, Y_train, epochs=800,
           validation_data=(X_test, Y_test), shuffle=False)
               </code>
@@ -335,13 +340,11 @@ import tensorflow as tf
           </section>
 
           <section>
-            <p></p>
+            <p>Criando modelo</p>
 
             <pre>
               <code class="python" data-trim contenteditable>
   Y_train, Y_test = tf.keras.utils.to_categorical(Y_train), tf.keras.utils.to_categorical(Y_test)
-
-
 
   features_num = len(X_train[0])
 
@@ -349,22 +352,19 @@ import tensorflow as tf
 
   l2 = len(Y_train[0])
 
-
-
   tf.set_random_seed(10)
 
+  #Criando entrada para os dados e classes
   X = tf.placeholder(shape=[None, features_num], dtype=tf.float32, name="Input")
-
   labels = tf.placeholder(shape=[None, l2], dtype=tf.float32, name="Labels")
 
 
-
   with tf.name_scope("Hidden_Layer") as scope:
-
+      #Criando pesos e bias da camada intermediária
       W1 = tf.Variable(tf.truncated_normal([features_num, l1], stddev=0.01), name="W1")
-
       B1 = tf.Variable(tf.zeros([l1]), name="B1")
 
+      #Calculando saída da camada intermediária
       l1_activation = tf.nn.relu(tf.matmul(X, W1) + B1, name="l1_activation")
               </code>
             </pre>
@@ -372,50 +372,61 @@ import tensorflow as tf
           </section>
 
           <section>
-            <p></p>
+            <p>Grafo da Camada Intermediária</p>
             <img src="./images/first-image-tensorflow.png" alt="First Step" width="650">
           </section>
 
           <section>
             <p></p>
-            <pre class="python" data-trim contenteditable>
-              <code>
+            <pre>
+              <code class="python" data-trim contenteditable>
 with tf.name_scope("Final_Layer") as scope:
+    #Criando pesos e bias da camada de saída
     W2 = tf.Variable(tf.truncated_normal([l1, l2], stddev=0.01), name="W2")
     B2 = tf.Variable(tf.zeros([l2]), name="B2")
+
+    #Calculando saída da camada de saída
     final_result = tf.nn.softmax(tf.matmul(l1_activation, W2) + B2, name="result")
               </code>
             </pre>
           </section>
 
+          <section>
+            <p>Grafo da Camada Final</p>
+            <img src="./images/second-image-tensorflow.png" alt="Second Step" width="650">
+          </section>
 
           <section>
             <p></p>
-            <pre class="python" data-trim contenteditable>
-              <code>
+            <pre>
+              <code class="python" data-trim contenteditable>
 with tf.name_scope("Loss_function") as scope:
+    #Criando a entropia cruzada
     loss_func = -tf.reduce_sum(labels * tf.log(final_result))
               </code>
             </pre>
           </section>
 
           <section>
-            <p></p>
+            <p>Grafo da Função de Custo</p>
             <img src="./images/third-image-tensorflow.png" alt="Third Step" width="650">
           </section>
 
           <section>
-            <pre class="python" data-trim contenteditable>
-              <code>
+            <pre>
+              <code class="python" data-trim contenteditable>
 with tf.name_scope('Accuracy') as scope:
-    is_correct = tf.equal(tf.argmax(final_result, 1), tf.argmax(labels, 1))
+    #Verificando se a classe predita é igual à real [1, 0, 0] [0.1, 0.9, 0.0]
+    is_correct = tf.equal(tf.argmax(final_result, axis=1), tf.argmax(labels, axis=1))
+
+    #Calculando a acurácia
     accuracy = tf.reduce_mean(tf.cast(is_correct, tf.float32))
               </code>
             </pre>
           </section>
 
           <section>
-            <p></p>
+            <p>Grafo da acurácia</p>
             <img src="./images/fourth-image-tensorflow.png" alt="Fourth Step" width="650">
           </section>
         </section>
