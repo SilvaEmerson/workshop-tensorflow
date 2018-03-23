@@ -172,6 +172,9 @@ def split_data(data, percent=0.8):
     index = int(percent * len(data))
     return data[:index], data[index:]
 
+#Resolver problemas com as classes ([1, 2, 3] -> [0, 1, 2])
+df['Class'] = df['Class'] - 1
+
 #Separa as classes do conjunto de dados
 labels = df.iloc[:, 0].values
 
@@ -270,8 +273,24 @@ model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 #Treino da rede
-model.fit(X_train, Y_train, epochs=800,
+history = model.fit(X_train, Y_train, epochs=800,
           validation_data=(X_test, Y_test), shuffle=False)
+
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='best')
+plt.show()
+
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='best')
+plt.show()
               </code>
             </pre>
           </section>
