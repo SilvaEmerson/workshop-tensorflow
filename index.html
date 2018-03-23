@@ -30,6 +30,14 @@
         width: 100% !important;
       }
     </style>
+
+    <script>
+    	var link = document.createElement( 'link' );
+    	link.rel = 'stylesheet';
+    	link.type = 'text/css';
+    	link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    	document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
   </head>
 
   <body>
@@ -296,14 +304,14 @@ plt.show()
           </section>
 
           <section>
-            <p>Gráfico de acurácia e perca</p>
+            <p>Gráfico de acurácia e perda</p>
             <figure style="display:inline-block; float:left">
               <img class="transition-element" src="./images/accuracy-keras.jpeg" width="450" alt="Acurácia com Keras">
               <figcaption>Acurácia com Keras</figcaption>
             </figure>
             <figure style="display:inline-block; float:right">
-              <img class="transition-element" src="./images/loss-keras.jpeg" width="450" alt="Perca com Keras">
-              <figcaption>Perca com Keras</figcaption>
+              <img class="transition-element" src="./images/loss-keras.jpeg" width="450" alt="Perda com Keras">
+              <figcaption>Perda com Keras</figcaption>
             </figure>
           </section>
         </section>
