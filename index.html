@@ -277,14 +277,14 @@ model.fit(X_train, Y_train, epochs=800,
           </section>
 
           <section>
-            <p>Gráfico de acurácia e perda</p>
+            <p>Gráfico de acurácia e perca</p>
             <figure style="display:inline-block; float:left">
               <img class="transition-element" src="./images/accuracy-keras.jpeg" width="450" alt="Acurácia com Keras">
               <figcaption>Acurácia com Keras</figcaption>
             </figure>
             <figure style="display:inline-block; float:right">
-              <img class="transition-element" src="./images/loss-keras.jpeg" width="450" alt="Perda com Keras">
-              <figcaption>Perda com Keras</figcaption>
+              <img class="transition-element" src="./images/loss-keras.jpeg" width="450" alt="Perca com Keras">
+              <figcaption>Perca com Keras</figcaption>
             </figure>
           </section>
         </section>
@@ -339,10 +339,6 @@ import tensorflow as tf
             </pre>
           </section>
 
-         <section>
-          <pre>
-            <code class="python" data-trim contenteditable>
-Y_train, Y_test = tf.keras.utils.to_categorical(Y_train), tf.keras.utils.to_categorical(Y_test)
           <section>
             <p>Criando modelo</p>
 
@@ -394,6 +390,7 @@ with tf.name_scope("Final_Layer") as scope:
               </code>
             </pre>
           </section>
+
           <section>
             <p>Grafo da Camada Final</p>
             <img src="./images/second-image-tensorflow.png" alt="Second Step" width="650">
